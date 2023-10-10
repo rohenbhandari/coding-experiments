@@ -70,3 +70,35 @@ print(f"Recall: {metrics.recall_score(y_test_updated, updated_predictions, avera
 print(f"F1 Score: {metrics.f1_score(y_test_updated, updated_predictions, average='weighted')}")
 
 # Now the model has been updated with human feedback and can be used for further predictions
+
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+
+# Assuming y_test_updated and updated_predictions are your data
+cm = confusion_matrix(y_test_updated, updated_predictions)
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.show()
+
+from sklearn.metrics import roc_curve, auc
+
+# Convert labels and predictions to integers
+y_test_updated_int = y_test_updated.astype(int)
+updated_predictions_int = updated_predictions.astype(int)
+
+# Now generate the ROC curve data
+fpr, tpr, _ = roc_curve(y_test_updated_int, updated_predictions_int)
+roc_auc = auc(fpr, tpr)
+
+plt.figure()
+plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic')
+plt.legend(loc="lower right")
+plt.show()
